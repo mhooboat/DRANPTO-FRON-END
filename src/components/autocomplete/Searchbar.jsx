@@ -22,16 +22,44 @@ const Searchbar = () => {
     setSuggestion([]);
   };
 
+  // const onChangeHandler = (text) => {
+  //   let matches = [];
+  //   let count = 0;
+  //   if (text.length > 0) {
+  //     matches = questions.filter((question) => {
+  //       const regex = new RegExp(`${text}`, "gi");
+  //       const keep = count < 5 && question.s.match(regex);
+  //       if (keep) {
+  //         count += 1;
+  //       }
+  //       return keep;
+  //     });
+  //   }
+  //   setSuggestion(matches);
+  //   setText(text);
+  //   setResults([]);
+  // };
+
   const onChangeHandler = (text) => {
     let matches = [];
+    let count = 0;
+    const inputValue = text.toLowerCase();
+    const inputLegth = inputValue.length;
+
     if (text.length > 0) {
       matches = questions.filter((question) => {
-        const regex = new RegExp(`${text}`, "gi");
-        return question.s.match(regex);
+        const keep =
+          count < 5 && question.s.slice(0,inputLegth).toLowerCase() === inputValue;
+
+        if (keep) {
+          count += 1;
+        }
+        return keep;
       });
     }
     setSuggestion(matches);
     setText(text);
+    setResults([])
   };
 
   const searchResult = () => {
@@ -39,7 +67,6 @@ const Searchbar = () => {
     let apiSearch = apiLink + `search?query=${apiText}`;
     const fetchData = async () => {
       const data = await axios.get(apiSearch);
-      console.log(data.data);
       setResults(data.data);
     };
     fetchData();
